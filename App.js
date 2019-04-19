@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View ,Button} from 'react-native';
 
 import FetchLocation from './components/fetchlocation';
 import Map from './components/map'
 export default class HelloWorldApp extends Component {
 
   state={
-    userLocation:null
+    userLocation:null,
+    userplaces:[]
   }
 
   getUserLocationhndler =()=>{
@@ -33,12 +34,39 @@ export default class HelloWorldApp extends Component {
     },err=>console.log('dsfsdferr'));
    
   }
+
+  getuserplacesHandler=() => {
+    console.log("working");
+    fetch('https://location-sharing-4785d.firebaseio.com/places.json')
+             .then(res=>res.json())
+             .then(parsedRes=>{
+               const placesArray=[];
+               for   (const key in parsedRes){
+                 placesArray.push({
+                   latitude:parsedRes[key].latitude,
+                   longitude:parsedRes[key].longitude,
+                   id:key
+                 });
+                 console.log(placesArray);
+               }
+               this.setState({
+                 userplaces:placesArray
+               })
+             })
+             .catch(err=>console.log(err));
+            
+  }
+  
+  
+  
   render() {
     return (
+      // <View ></View>
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center",color:"red" }}>
-      
+      <Button title="Get user places" onPress={this.getuserplacesHandler}></Button>
         <FetchLocation onGetlocation ={this.getUserLocationhndler}/>
-        <Map  userlocation={this.state.userlocation}/>
+        <Map  userlocation={this.state.userlocation}
+        userplaces={this.state.userplaces}/>
       </View>
     );
   }
