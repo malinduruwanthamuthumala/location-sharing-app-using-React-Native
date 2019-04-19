@@ -19,8 +19,18 @@ export default class HelloWorldApp extends Component {
         longitudeDelta: 0.0421,
 
         }
-      })
-    },err=>console.log('err'));
+      }); 
+       fetch('https://location-sharing-4785d.firebaseio.com/places.json',{
+             method:'POST',
+           body: JSON.stringify({
+             latitude: position.coords.latitude,
+               longitude: position.coords.longitude,
+             })
+          })
+             .then(res=>console.log(res))
+             .catch(err=>console.log(err));
+      
+    },err=>console.log('dsfsdferr'));
    
   }
   render() {
